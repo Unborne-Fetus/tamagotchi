@@ -1,6 +1,6 @@
 # Virtual Pet — Original 1996 P1 Research & Recreation
 
-> **Project status:** research and foundation phase. This is not yet a pixel-perfect or behavior-perfect recreation.
+> **Project status:** **v0.2 research build, playable**. It is not yet pixel-perfect, firmware-perfect, or an exact 1:1 recreation.
 >
 > **Reference:** original Japanese Tamagotchi P1 released November 23, 1996. Do not conflate its rules with the 1997 P2 or 2017+ rereleases.
 
@@ -12,9 +12,11 @@ Reconstruct the experience of the first-generation three-button, monochrome, rea
 
 - `docs/P1_REFERENCE.md` — primary feature and behavior reference, with sources and confidence notes.
 - `docs/IMPLEMENTATION_PLAN.md` — modules, fidelity tests, research backlog, and milestones.
-- `src/engine.js` — dependency-free provisional simulation engine.
+- `docs/ACCURACY.md` — sourced historical facts and every remaining approximation.
+- `docs/EMULATION_PATH.md` — optional GPL-compliant emulator/WASM path to firmware fidelity.
+- `src/engine.js` — dependency-free Japanese 1996 P1 research engine with versioned state, stage-specific life cycle, time and needs.
 - `src/main.js` and `index.html` — browser prototype with A/B/C controls and monochrome display.
-- `tests/engine.test.mjs` — Node built-in test runner.
+- `tests/engine.test.mjs` — 15 deterministic Node tests (all passed locally on Node 22).
 
 ## Scope
 
@@ -35,7 +37,11 @@ Local saves are stored in the browser's localStorage for this domain and cannot 
 
 ## Running
 
-Open `index.html` in a modern browser. For a local server use `python -m http.server 8000` and visit http://localhost:8000. To run tests: `node --test` (Node 20+ recommended).
+Run `python -m http.server 8000` at repo root and open http://localhost:8000; or use the GitHub Pages site after the Pages workflow succeeds. JavaScript modules require HTTP hosting in ordinary browsers. Run the test suite with `npm test` (Node 20+ recommended). Browser smoke testing remains to be done.
+
+**Controls:** A cycles icons / guesses left, B selects / guesses right, C cancels. On the pet screen, A+C mutes. While viewing the clock, A+C enters clock editing; A sets hours, B sets minutes, C confirms. After a pet's life ends, A+C restarts.
+
+**Save compatibility:** this v2 build uses a new localStorage save key. Older v1 prototype states remain stored separately, but are not currently migratable into v2. Back up your previous save before switching. v2 export/import files are supported.
 
 ## Historical accuracy policy
 
