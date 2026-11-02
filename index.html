@@ -3,67 +3,77 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#dde5c4">
-  <title>Virtual Pet — P1 Research Prototype</title>
+  <meta name="theme-color" content="#f3efe3">
+  <title>Classic Pocket Pet — 1996 P1 Research</title>
   <style>
-    :root { color-scheme: light; font-family: system-ui, sans-serif; background: #e9eddf; color: #233325 }
+    :root { color-scheme: light; font: 16px/1.5 ui-sans-serif, system-ui, sans-serif; background: #f3efe3; color: #3b4540 }
     * { box-sizing: border-box }
-    body { margin: 0; min-height: 100dvh; display: grid; place-items: center; padding: 1.4rem }
-    main { max-width: 680px; width: 100%; display: grid; gap: 1.5rem; justify-items: center }
-    h1 { font-size: 1.35rem; margin: 0; text-align: center }
-    .hint { margin: 0; text-align: center; max-width: 50ch; color: #465649; font-size: .92rem }
-    .shell { width: min(340px, 88vw); aspect-ratio: .82; background: #d7a7ae; border-radius: 47% 48% 46% 46% / 43% 43% 52% 52%; border: 8px solid #b9818c; box-shadow: inset -16px -15px 25px #b97e8955, inset 12px 14px 20px #fff9, 0 15px 30px #0002; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 20px; padding: 30px }
-    .screen-border { width: 100%; aspect-ratio: 1.43; border: 5px solid #b79a93; border-radius: 18px; padding: 12px; background: #c0c9a8; box-shadow: inset 0 2px 5px #0003 }
-    .indicator { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; height: 30px; align-items: center }
-    .indicator span { font-size: .64rem; border-radius: 5px; padding: 2px; text-align: center; background: #e1e6d0; opacity: .56; white-space: nowrap; overflow: hidden }
-    .indicator span.active { opacity: 1; background: #6c8059; color: #fff }
-    .indicator span.attention { background: #4f4f27; color: #fff; opacity: 1; animation: pulse 1s infinite }
-    canvas { width: 100%; height: auto; aspect-ratio: 2/1; background: #cbd8ad; image-rendering: pixelated; display: block; border: 2px solid #a3b38a }
-    .controls { display: flex; gap: 26px }
-    .controls button { width: 58px; height: 48px; background: #ecbdc1; border: 3px solid #925f6b; border-radius: 50%; box-shadow: 0 5px 0 #935e6a; font-weight: 800; cursor: pointer; touch-action: manipulation }
-    .controls button:active { transform: translateY(4px); box-shadow: 0 1px 0 #935e6a }
-    .control-legend { display: flex; gap: 38px; font-size: .75rem; color: #533d43; font-weight: 700; margin-top: -14px }
-    .status { width: 100%; display: grid; gap: 7px; padding: 1rem; border: 1px solid #b7c5ae; background: #f7f9f1; border-radius: 12px }
-    .status p { margin: 0 }
-    .stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px }
-    .stat-grid span { background: #e8eedf; padding: 7px; border-radius: 6px; font-size: .88rem }
-    .toolbar { display: flex; flex-wrap: wrap; justify-content: center; gap: 9px }
-    .toolbar button, .toolbar a { color: #234331; background: white; padding: 9px 12px; border: 1px solid #a7b6a0; border-radius: 8px; font: inherit; text-decoration: none; cursor: pointer }
-    .small { font-size: .8rem; color: #566454 }
-    @keyframes pulse { 50% { filter: brightness(1.8) } }
-    @media(prefers-reduced-motion:reduce){* { animation: none !important; transition: none !important }}
+    body { margin: 0; min-height: 100dvh; padding: 22px 14px 40px; display: flex; align-items: center; justify-content: center }
+    main { display: flex; flex-direction: column; align-items: center; gap: 14px; width: min(100%, 490px) }
+    h1 { font-size: 1.15rem; letter-spacing: .07em; text-transform: uppercase; font-weight: 800; margin: 0; text-align: center }
+    .sub { font-size: .74rem; text-align: center; margin: 0; color: #64746a }
+    .shell { position: relative; width: min(365px, 94vw); height: min(445px, 114vw); background: radial-gradient(ellipse at 36% 29%, #f8cacf 0%, #e49ba8 48%, #d97f90 91%); border: 7px solid #bf7386; border-radius: 48% 49% 47% 47% / 44% 44% 52% 54%; box-shadow: inset 13px 10px 17px #ffffffa0, inset -13px -15px 22px #a8476a40, 0 13px 0 #c4b7a9, 0 22px 35px #433f332c; display: flex; justify-content: center; align-items: center; flex-direction: column; padding: 38px 31px 23px; isolation: isolate }
+    .shell:before { content: ''; position: absolute; width: 22px; height: 27px; border: 6px solid #cf8997; border-radius: 40%; top: -22px; z-index: -1; background: #f8ced5 }
+    .bezel { width: 100%; background: #f1d2bb; padding: 11px; border: 5px solid #b4677a; border-radius: 13px; transform: translateY(-7px); box-shadow: inset 0 4px 8px #86546550, 0 3px 8px #ffffff7d }
+    .screen { width: 100%; aspect-ratio: 1.1; background: #cdd7ad; border: 2px solid #7b886c; box-shadow: inset 0 1px 4px #44503438; display: grid; grid-template-rows: 25px 1fr 25px; padding: 3px; }
+    .icon-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; align-items: center; justify-items: center }
+    .icon-cell { width: 25px; height: 23px; display: grid; place-items: center; color: #344a39; opacity: .72; border-radius: 4px; position: relative }
+    .icon-cell svg { width: 22px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2.1; stroke-linecap: round; stroke-linejoin: round }
+    .icon-cell.active { background: #899f71aa; opacity: 1; color: #182f23 }
+    .icon-cell.attention { background: #526443; color: #eef4df; opacity: 1; animation: flash 1.2s steps(2,start) infinite }
+    .screen-inner { display: grid; align-items: center; justify-items: stretch; overflow: hidden; background: repeating-conic-gradient(from 45deg, #b5c2a273 0% 25%, #dfd9c073 0% 50%) 50% / 26px 26px; border: 1px solid #8da17c; padding: 4px }
+    canvas { display: block; width: 100%; max-height: 100%; aspect-ratio: 2 / 1; image-rendering: pixelated; image-rendering: crisp-edges; }
+    .buttons { display: flex; justify-content: space-between; align-items: end; width: 87%; margin-top: 8px }
+    .buttons button { cursor: pointer; width: 53px; height: 45px; background: linear-gradient(135deg, #f8ccd6, #d8869a); border-radius: 50%; border: 3px solid #a85d70; box-shadow: inset 3px 3px 6px #ffffffa0, 0 5px 0 #a65c71, 0 8px 10px #57263030; color: #694152; font-weight: 900; font-size: 1rem; touch-action: manipulation }
+    .buttons button:active { transform: translateY(4px); box-shadow: 0 1px 0 #a65c71 }
+    .buttons button:focus-visible, .utility button:focus-visible { outline: 3px solid #537d68; outline-offset: 3px }
+    .function { font-size: .74rem; font-weight: 700; text-transform: uppercase; margin: 0; letter-spacing: .04em }
+    .current { font-size: .86rem; text-align: center; min-height: 24px; margin: 0; }
+    .utility { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center }
+    .utility button, .utility label, .utility a { border: 1px solid #b7b9a7; background: #fffdf6; border-radius: 7px; padding: 6px 11px; cursor: pointer; color: inherit; font: inherit; font-size: .78rem; text-decoration: none }
+    .utility input { display: none }
+    details { width: 100%; font-size: .79rem; color: #4c6256; border: 1px solid #d6d3c5; border-radius: 10px; padding: 8px 12px }
+    summary { cursor: pointer; font-weight: 700 }
+    .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px; margin: 10px 0 }
+    .stats span { padding: 5px 7px; background: #e9edde; border-radius: 5px }
+    .notice { font-size: .72rem; color: #716a62; text-align: center; margin: 0 }
+    @keyframes flash { 50% { opacity: .27 } }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important } }
   </style>
 </head>
 <body>
   <main>
-    <h1>1996-style Virtual Pet</h1>
-    <p class="hint">Research prototype — provisional mechanics and independently drawn placeholder art. Not yet an exact recreation.</p>
-    <div class="shell" aria-label="Virtual pet three-button device">
-      <div class="screen-border">
-        <div class="indicator" id="top-icons" aria-label="Top function icons"></div>
-        <canvas width="32" height="16" id="lcd" role="img" aria-label="Virtual pet monochrome LCD"></canvas>
-        <div class="indicator" id="bottom-icons" aria-label="Bottom function icons"></div>
+    <h1>Classic Pocket Pet</h1>
+    <p class="sub">1996 Japanese P1 · historical research build</p>
+    <section class="shell" aria-label="1990s-style virtual pet device with three buttons">
+      <div class="bezel">
+        <div class="screen">
+          <div class="icon-row" id="top-icons" aria-label="Upper row of care icons"></div>
+          <div class="screen-inner"><canvas id="lcd" width="32" height="16" role="img" aria-label="Monochrome pet display"></canvas></div>
+          <div class="icon-row" id="bottom-icons" aria-label="Lower row of care icons"></div>
+        </div>
       </div>
-      <div class="controls">
-        <button id="button-a" aria-label="Button A, select">A</button>
-        <button id="button-b" aria-label="Button B, confirm">B</button>
-        <button id="button-c" aria-label="Button C, cancel">C</button>
+      <div class="buttons" aria-label="Three-button controls">
+        <button id="a" title="A — cycle or choose left" aria-label="Button A">A</button>
+        <button id="b" title="B — confirm or choose right" aria-label="Button B">B</button>
+        <button id="c" title="C — cancel" aria-label="Button C">C</button>
       </div>
-      <div class="control-legend"><span>SELECT</span><span>OK</span><span>BACK</span></div>
-    </div>
-    <section class="status" aria-live="polite">
-      <p><strong id="screen-label">Clock setup</strong> · <span id="outcome">Use A / B / C</span></p>
-      <div class="stat-grid" id="stats"></div>
-      <p class="small" id="help"></p>
     </section>
-    <div class="toolbar">
-      <button id="combo" aria-label="Press buttons A and C together">A + C</button>
-      <button id="export">Export save</button>
-      <label for="import-save" class="small">Import save <input id="import-save" type="file" accept=".json,application/json"></label>
-      <a href="./docs/P1_REFERENCE.md">Reference notes</a>
+    <p class="function" id="screen-label" aria-live="polite">Clock setup</p>
+    <p class="current" id="outcome" aria-live="polite">A hour · B minute · C set</p>
+    <div class="utility">
+      <button id="combo" title="A + C pressed together">A + C</button>
+      <button id="export">Save backup</button>
+      <label>Load backup<input type="file" id="import" accept=".json,application/json" aria-label="Load save backup"></label>
+      <a href="https://github.com/Unborne-Fetus/tamagotchi/blob/main/docs/ACCURACY.md" target="_blank" rel="noopener noreferrer">Accuracy notes</a>
     </div>
-    <p class="small">Keys A/B/C or 1/2/3. Progress uses wall time when this page is closed. Stored locally on this device.</p>
+    <details>
+      <summary>Care information / test diagnostics</summary>
+      <div id="stats" class="stats"></div>
+      <p id="help"></p>
+    </details>
+    <p class="notice">Independent fan research. Not affiliated with Bandai. Behaviors are still being verified against 1996 hardware. Saves stay on this device.</p>
+    <script type="module" src="./src/main.js"></script>
   </main>
-  <script type="module" src="./src/main.js"></script>
 </body>
 </html>
