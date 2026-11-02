@@ -1,0 +1,70 @@
+name: Deploy Tamagotchi to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# GitHub Pages publishes from the "github-pages" deployment environment.
+# Enable Settings > Pages > Build and deployment > Source: GitHub Actions.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Verify and package browser app
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Configure Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate source syntax
+        run: |
+          node --check src/engine.js
+          node --check src/main.js
+
+      - name: Run simulation tests
+        run: npm test
+
+      - name: Assemble clean static site
+        run: |
+          set -euo pipefail
+          mkdir -p dist/src dist/docs
+          cp index.html dist/index.html
+          cp src/engine.js src/main.js dist/src/
+          cp docs/P1_REFERENCE.md docs/IMPLEMENTATION_PLAN.md dist/docs/
+          touch dist/.nojekyll
+          test -s dist/index.html
+          test -s dist/src/main.js
+          test -s dist/src/engine.js
+
+      - name: Upload site artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: ./dist
+
+  deploy:
+    name: Publish GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Publish site
+        id: deployment
+        uses: actions/deploy-pages@v4
