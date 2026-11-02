@@ -38,7 +38,7 @@ Sources:
 - Three push buttons below display: **A=cycle/select**, **B=confirm**, **C=cancel/back** [O]. In the direction game A=left and B=right [O/C].
 - Eight surrounding indicators, with *attention* illuminating automatically rather than operating as a normal menu item [O/C].
 - Functional icons in UI traversal order (verify precise physical LED addressing from device):
-  1. Feed; 2. Light; 3. Toilet; 4. Health; 5. Play; 6. Medicine; 7. Discipline; 8. Attention (non-selectable).
+  1. Feed; 2. Light; 3. Play; 4. Medicine; 5. Toilet; 6. Health meter; 7. Discipline; 8. Attention (non-selectable).
 - Pixel-art screen appears roughly 32×16 active graphic cells in widely documented projects [C/?]. Verify exact active pixel dimensions, icon layer geometry, icon pixel patterns, scan timing, and background compositing against photographed hardware.
 - 4-bit Epson E0C6S46 CMOS CPU, 32.768 kHz, quoted memory 640×4 RAM words and 160×4 display words [C/? hardware compilation]. Verify silicon revision before using for cycle accuracy.
 - Need independent sprite redraws for publicly distributed build unless source art licensing is established.
@@ -49,7 +49,7 @@ Sources:
 - While no icon is selected, B displays clock; B returns to pet. Clock editing: from clock press A+C, then A increments hour, B increments minute, C commits [O/H].
 - Clock-adjust screen pauses simulation (aging, waste and depletion) [C].
 - On main pet view press A+C to toggle sound on/off (after hatching) [O/H].
-- On terminal screen C toggles last-age view, A+C restarts egg [O/H].
+- On the terminal screen B displays final age/weight, A+C restarts the egg [C].
 - RTC behavior during mobile sleep/offline should depend on elapsed wall time; storing only timer handles is incorrect.
 - Time-zone and DST adjustment behavior is open [?] — make local clock separate from monotonic elapsed time and preserve per-pet timestamps.
 
@@ -57,7 +57,7 @@ Sources:
 - Stages: Egg → Baby → Child → Teen → Adult (+ one special outcome) [O/C].
 - Egg ~5 min [O]; baby stage ~65 minutes [C]; teen around age 3 and adult around age 6 [C]. These are reference *milestones*, not precise firmware scheduler deadlines.
 - Source character names for P1: baby **Babytchi**; child **Marutchi**; teens **Tamatchi** and **Kuchitamatchi**; adults **Mametchi, Ginjirotchi, Maskutchi, Kuchipatchi, Nyorotchi, Tarakotchi**; special **Oyajitchi** [C; confirm exact regional roster/special designation before finishing].
-- Care mistakes, discipline mistakes, and historical growth branches must be tracked separately. Precise thresholds, inheritance, special trigger and resets remain [?].
+- Original Japanese growth is associated with accumulated care mistakes, discipline meter percentage and the hidden teen type; modern rereleases additionally use discipline mistakes as an evolution input. See docs/ACCURACY.md for conflicting community charts and remaining uncertainty.
 - Screen should animate egg pulsing, hatch, idle poses, reactions, evolution transitions, sleep, sickness, excrement, departure, and game outcome [? sprite/timing].
 - Aging is counted as years/days on a meter; character care rate changes with age [C].
 
@@ -84,7 +84,7 @@ For every verified scenario capture:
 - Output of same sequence on clone (golden trace).
 **Pass:** state and exact frame/audio comparisons within measured tolerances. **Fail:** any unexplained mismatch.
 
-## Open research tasks (do not substitute guesses)
+See [Accuracy Ledger](ACCURACY.md) and [Firmware-accuracy plan](EMULATION_PATH.md).\n\n## Open research tasks (do not substitute guesses)
 - Full sprite bitmaps, hit-frame animation timing, icon pixel geometry and backdrop;
 - P1 JP 1996 growth decision tree and age calculations;
 - Per-character/age decrement intervals, sleep/wake times, weight minima/maxima;
