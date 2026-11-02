@@ -1,0 +1,25 @@
+# Generated outputs and local tooling
+node_modules/
+dist/
+coverage/
+*.log
+.DS_Store
+__pycache__/
+.pytest_cache/
+
+# Never commit proprietary virtual-pet firmware or device dumps
+*.rom
+*.bin
+*.b
+*.nca
+*.nsp
+*.xci
+firmware/
+roms/
+dumps/
+
+# User-specific state, test screenshots
+*.sav
+*.srm
+*.state
+screenshots/
