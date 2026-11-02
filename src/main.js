@@ -167,15 +167,15 @@ function render() {
   }
   lcd();
   const clockEdit = state.phase === 'clock-edit' || state.phase === 'setup';
-  const title = clockEdit ? 'Set the time' : state.phase === 'egg' ? 'Waiting for the egg' :
-    state.phase === 'finished' ? 'Life cycle complete' : screen === 'clock' ? 'Clock' :
+  const title = clockEdit ? 'Set the time' : state.phase === 'finished' ? 'Life cycle complete' :
+    screen === 'clock' ? 'Clock' : state.phase === 'egg' ? 'Waiting for the egg' :
     screen === 'menu' ? selected === 0 ? 'Choose food' : 'Choose light' :
     screen === 'meter' ? ['Age & weight','Discipline','Hungry','Happy'][meterPage] :
     screen === 'game' ? 'Left or right?' : selected >= 0 ? label[selected] : state.character;
   const hint = clockEdit ? 'A = hour  ·  B = minute  ·  C = confirm' :
     state.phase === 'finished' ? 'B = final age  ·  A+C = another egg' :
-    state.phase === 'egg' ? 'B = clock  ·  hatch after 5 minutes' :
     screen === 'clock' ? 'B = back  ·  A+C = set time' :
+    state.phase === 'egg' ? 'B = clock  ·  hatch after 5 minutes' :
     screen === 'menu' ? 'A = change  ·  B = select  ·  C = back' :
     screen === 'game' ? 'A = left  ·  B = right  ·  C = exit' :
     screen === 'meter' ? 'A/B = next  ·  C = back' : 'A = icon  ·  B = confirm  ·  C = cancel';
