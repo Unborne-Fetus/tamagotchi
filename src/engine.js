@@ -53,6 +53,7 @@ export function createGame(now = Date.now()) {
     startedAt: null, bornAt: null, stageAt: null, lastMinuteAt: now, updatedAt: now,
     age: 0, hunger: 0, happiness: 0, discipline: 0, weight: 5,
     careMistakes: 0, stageCareMistakes: 0, disciplineMisses: 0,
+    childDisciplineAtEvolution: null,
     awake: true, lightsOn: true, muted: false,
     waste: 0, sick: false, medicineRemaining: 0,
     babyIllnessSeen: false, babyPoopEvents: 0,
@@ -129,12 +130,14 @@ function evolve(s, time) {
   } else if (s.stage === 'child' && elapsed >= PROFILE.childMinutes) {
     const teen = chooseTeen(s.careMistakes, s.discipline);
     s.teenType = teen.teenType;
+    s.childDisciplineAtEvolution = s.discipline;
     changeCharacter(s, time, teen.character, 'teen');
     // Discipline resets at evolution: provisional, for comparing stage discipline.
     s.discipline = 0; s.heartDrops = 0; s.nextDisciplineDrop = 6;
   } else if (s.stage === 'teen' && elapsed >= PROFILE.teenMinutes[s.character]) {
     const adult = chooseAdult(s.character, s.teenType, s.careMistakes, s.discipline);
-    s.canBecomeOyajitchi = adult === 'Maskutchi' && s.teenType === 2 && s.discipline === 0;
+    s.canBecomeOyajitchi = adult === 'Maskutchi' && s.teenType === 2 &&
+      s.childDisciplineAtEvolution === 0 && s.discipline === 0;
     changeCharacter(s, time, adult, 'adult');
   } else if (s.stage === 'adult' && s.character === 'Maskutchi' && s.canBecomeOyajitchi && elapsed >= 4 * 1440) {
     changeCharacter(s, time, 'Oyajitchi', 'adult');
