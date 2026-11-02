@@ -1,0 +1,14 @@
+{
+  "name": "virtual-pet-p1-research-prototype",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Independent original-style virtual pet research prototype (provisional mechanics)",
+  "scripts": {
+    "test": "node --test",
+    "serve": "python -m http.server 8000"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
