@@ -22,6 +22,17 @@ Reconstruct the experience of the first-generation three-button, monochrome, rea
 
 Explicitly out of scope for P1: connections, breeding, modern shops/currency, touchscreen controls, online play, P2 number game, modern characters, and forced ad interruptions.
 
+## Play online (GitHub Pages)
+
+**Expected website address (once Pages is enabled and the deployment succeeds):**
+https://unborne-fetus.github.io/tamagotchi/
+
+The site automatically redeploys after each push to `main`, via [Deploy Tamagotchi to GitHub Pages](https://github.com/Unborne-Fetus/tamagotchi/actions/workflows/deploy.yml). The deployment workflow runs simulation tests first and publishes only the browser assets. No external server, API key, or paid hosting is needed.
+
+**One-time repository setting, if Pages is not already enabled:** Go to [Settings → Pages](https://github.com/Unborne-Fetus/tamagotchi/settings/pages), and set **Build and deployment → Source** to **GitHub Actions**. Then run the workflow from the [Actions tab](https://github.com/Unborne-Fetus/tamagotchi/actions/workflows/deploy.yml) using **Run workflow**, or push another commit to `main`. Wait for a successful `Publish GitHub Pages` step before using the expected website URL. (This connector cannot change GitHub Pages site settings or inspect push-triggered deployment runs.)
+
+Local saves are stored in the browser's localStorage for this domain and cannot automatically migrate from a localhost copy. Use **Export save** and **Import save** when changing domains.
+
 ## Running
 
 Open `index.html` in a modern browser. For a local server use `python -m http.server 8000` and visit http://localhost:8000. To run tests: `node --test` (Node 20+ recommended).
