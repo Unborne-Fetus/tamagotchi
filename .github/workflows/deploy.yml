@@ -43,7 +43,7 @@ jobs:
           mkdir -p dist/src dist/docs
           cp index.html dist/index.html
           cp src/engine.js src/main.js dist/src/
-          cp docs/P1_REFERENCE.md docs/IMPLEMENTATION_PLAN.md dist/docs/
+          cp docs/P1_REFERENCE.md docs/IMPLEMENTATION_PLAN.md docs/ACCURACY.md docs/EMULATION_PATH.md dist/docs/
           touch dist/.nojekyll
           test -s dist/index.html
           test -s dist/src/main.js
