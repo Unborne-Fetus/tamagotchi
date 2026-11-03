@@ -1,6 +1,6 @@
 # Virtual Pet — Original 1996 P1 Research & Recreation
 
-> **Project status:** **v0.2 research build, playable**. It is not yet pixel-perfect, firmware-perfect, or an exact 1:1 recreation.
+> **Project status:** **v0.3** with two modes: a playable research recreation and a deployed original-CPU TamaLIB P1 browser emulator. The latter requires user-supplied authorized firmware; physical-device 1:1 accuracy is not yet certified.
 >
 > **Reference:** original Japanese Tamagotchi P1 released November 23, 1996. Do not conflate its rules with the 1997 P2 or 2017+ rereleases.
 
@@ -16,7 +16,7 @@ Reconstruct the experience of the first-generation three-button, monochrome, rea
 - `docs/EMULATION_PATH.md` — optional GPL-compliant emulator/WASM path to firmware fidelity.
 - `src/engine.js` — dependency-free Japanese 1996 P1 research engine with versioned state, stage-specific life cycle, time and needs.
 - `src/main.js` and `index.html` — browser prototype with A/B/C controls and monochrome display.
-- `tests/engine.test.mjs` — 16 deterministic Node tests, including a UI clock-control smoke test (all passed locally on Node 22).
+- `tests/engine.test.mjs` — 19 automated Node tests, including a UI clock-control smoke test (all passed locally on Node 22).
 
 ## Scope
 
