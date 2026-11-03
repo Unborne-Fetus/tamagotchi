@@ -19,7 +19,7 @@ command -v emcc >/dev/null || { echo "Install emsdk before building the emulator
 emcc -std=c11 -O2 \
   native/p1_bridge.c \
   vendor/tamalib/cpu.c vendor/tamalib/hw.c vendor/tamalib/tamalib.c \
-  -sWASM=1 -sNO_ENTRY=1 -sMODULARIZE=1 -sEXPORT_ES6=1 \
+  -sWASM=1 --no-entry -sMODULARIZE=1 -sEXPORT_ES6=1 \
   -sEXPORT_NAME=createP1Module -sENVIRONMENT=worker \
   -sALLOW_MEMORY_GROWTH=1 -sFILESYSTEM=0 \
   -sEXPORTED_RUNTIME_METHODS=HEAPU8 \
