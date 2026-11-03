@@ -42,7 +42,7 @@ function from64(data) {
 function storeSnapshot(payload) {
   if (!loaded || payload.romHash !== romHash || !payload.data) return;
   const state = {
-    kind: 'p1-tamalib-state-v1', version: 1,
+    kind: 'p1-tamalib-state-v2', version: 1,
     romHash, savedAt: payload.savedAt,
     data: to64(new Uint8Array(payload.data))
   };
@@ -170,7 +170,7 @@ $('hw-import').addEventListener('change', async e => {
     if (!loaded) throw Error('Load the matching firmware first');
     if (file.size > 100_000) throw Error('Backup is too large');
     const source = JSON.parse(await file.text());
-    if (source.kind !== 'p1-tamalib-state-v1' || source.version !== 1 ||
+    if (source.kind !== 'p1-tamalib-state-v2' || source.version !== 1 ||
       source.romHash !== romHash) throw Error('This backup belongs to another firmware');
     worker.postMessage({ type: 'restore', snapshot: {
       kind: source.kind, romHash: source.romHash, savedAt: source.savedAt,
@@ -190,7 +190,7 @@ $('hw-rom').addEventListener('change', async e => {
     let snapshot;
     try {
       const old = JSON.parse(localStorage.getItem('p1-hardware-' + hash) || 'null');
-      if (old?.kind === 'p1-tamalib-state-v1' && old.version === 1) {
+      if (old?.kind === 'p1-tamalib-state-v2' && old.version === 1) {
         snapshot = { kind: old.kind, savedAt: old.savedAt,
           romHash: hash, data: from64(old.data) };
       }
