@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#efe9dc">
+  <meta name="description" content="Independent P1 hardware emulator research using locally provided, authorized firmware.">
+  <title>Hardware Mode • Classic Pocket Pet</title>
+  <style>
+    :root { font: 16px/1.5 system-ui, sans-serif; color: #263a30; background: #f0ede4; color-scheme: light }
+    * { box-sizing: border-box }
+    body { margin: 0; min-height: 100dvh; padding: 22px 15px 40px; display: grid; place-items: center }
+    main { display: grid; width: min(100%, 660px); justify-items: center; gap: 17px }
+    header { text-align: center }
+    h1 { margin: 0; font-size: clamp(1.2rem, 4vw, 1.6rem); letter-spacing: .05em }
+    .eyebrow { font-size: .74rem; letter-spacing: .13em; text-transform: uppercase; color: #70796b; font-weight: 700 }
+    header p { margin: .35rem auto 0; max-width: 48ch; font-size: .84rem; color: #536455 }
+    .shell { width: min(360px, 93vw); aspect-ratio: .83; border-radius: 48% 48% 46% 46% / 42% 42% 54% 54%;
+      border: 7px solid #bb7b87; background: radial-gradient(ellipse at 32% 20%, #ffe1dd, #e5a1ac 52%, #c67a92);
+      box-shadow: inset 9px 10px 25px #ffefea90, inset -17px -20px 28px #99456532, 0 8px 0 #bd9f9a, 0 24px 35px #40372b35;
+      padding: 36px 31px 25px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 26px; position: relative }
+    .shell::before { content: ''; position: absolute; width: 27px; height: 31px; border-radius: 48%; border: 7px solid #bb7b87; background: #f8cbd0; top: -26px; z-index: -1 }
+    .bezel { width: 100%; background: #dfbfa9; border: 5px solid #b78485; border-radius: 15px; box-shadow: inset 0 5px 8px #865c4d40; padding: 11px }
+    .display { background: #cad8ad; border: 2px solid #849474; padding: 4px; display: grid; gap: 6px; box-shadow: inset 0 2px 9px #47593d30 }
+    .icons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; justify-items: center; font-size: 1.06rem; line-height: 1; }
+    .icons span { width: 28px; height: 23px; display: grid; place-items: center; opacity: .25; border-radius: 4px; border: 1px solid transparent }
+    .icons span.lit { opacity: 1; color: #183922; border-color: #627d58; background: #b7c8a1 }
+    .lcd-frame { padding: 4px 2px; border: 1px solid #9ab085; background: repeating-conic-gradient(#b3bd97 0% 25%, #ccd3a9 0% 50%) 50% / 12px 12px }
+    canvas { display: block; width: 100%; image-rendering: pixelated; aspect-ratio: 2 / 1; }
+    .buttons { width: 88%; display: flex; justify-content: space-between; align-items: center }
+    .buttons button { border: 3px solid #a85e73; background: linear-gradient(145deg, #ffd5d7, #d7899d); width: 57px; height: 46px; border-radius: 50%;
+      color: #744753; box-shadow: 0 5px 0 #9f596c, inset 2px 2px 7px #fff7; font-weight: 800; font-size: 1.05rem; cursor: pointer; touch-action: none; user-select: none }
+    .buttons button:active,.buttons button.pressed { transform: translateY(4px); box-shadow: 0 1px 0 #9f596c }
+    .status { min-height: 42px; font-weight: 600; font-size: .85rem; text-align: center; max-width: 53ch }
+    .status[data-error=true] { color: #9b3b35 }
+    .hint { font-size: .74rem; color: #667267; text-align: center; margin: -10px 0 0 }
+    .actions { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px }
+    .actions label,.actions button,.actions a { display: inline-flex; align-items: center; justify-content: center; border: 1px solid #9ca99a; padding: 9px 13px;
+      border-radius: 9px; background: #fffef9; color: #2e4c3d; font: inherit; font-size: .83rem; text-decoration: none; font-weight: 650; cursor: pointer }
+    .actions input { display: none }
+    .actions label:first-child { background: #315d48; border-color: #315d48; color: white }
+    .actions button:disabled, .actions label:has(input:disabled) { opacity: .45; cursor: not-allowed }
+    aside { max-width: 575px; border: 1px solid #d0d5c6; border-radius: 12px; padding: 13px 16px; background: #fcfaf4; font-size: .79rem; color: #4f6054 }
+    aside p { margin: 0 0 .55rem }
+    aside p:last-child { margin-bottom: 0 }
+    a { color: #22553f }
+    button:focus-visible, label:focus-within { outline: 3px solid #365b4a; outline-offset: 3px }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div class="eyebrow">Hardware-accuracy research</div>
+      <h1>Classic Pocket Pet · P1</h1>
+      <p>Execute original E0C6S46 instructions in a browser. Compatible firmware must be supplied by you and stays on your device.</p>
+    </header>
+
+    <section class="shell" aria-label="Independent original-style virtual pet shell">
+      <div class="bezel">
+        <div class="display">
+          <div class="icons" aria-label="Upper LCD indicators">
+            <span id="hw-icon-0" title="Feed">♧</span><span id="hw-icon-1" title="Light">☼</span>
+            <span id="hw-icon-2" title="Game">◆</span><span id="hw-icon-3" title="Medicine">✚</span>
+          </div>
+          <div class="lcd-frame"><canvas id="hw-lcd" width="32" height="16" aria-label="32 by 16 emulated LCD screen" role="img"></canvas></div>
+          <div class="icons" aria-label="Lower LCD indicators">
+            <span id="hw-icon-4" title="Toilet">♨</span><span id="hw-icon-5" title="Health">♥</span>
+            <span id="hw-icon-6" title="Discipline">♠</span><span id="hw-icon-7" title="Attention">!</span>
+          </div>
+        </div>
+      </div>
+      <div class="buttons" aria-label="Hardware controls">
+        <button id="hw-a" aria-label="Left button A">A</button>
+        <button id="hw-b" aria-label="Middle button B">B</button>
+        <button id="hw-c" aria-label="Right button C">C</button>
+      </div>
+    </section>
+
+    <p id="hw-status" class="status" role="status" aria-live="polite">Load your firmware to begin.</p>
+    <p id="hw-catchup" class="hint" aria-live="polite">Native 32×16 LCD · hardware timer and buzzer</p>
+
+    <div class="actions">
+      <label for="hw-rom">Choose P1 firmware (.bin / .b)<input type="file" id="hw-rom" accept=".bin,.b,application/octet-stream" aria-label="Choose local P1 firmware"></label>
+      <button id="hw-mute">Mute</button>
+      <button id="hw-export" disabled>Export save</button>
+      <label for="hw-import">Import save<input type="file" id="hw-import" accept=".json,application/json" disabled></label>
+      <a href="./index.html">Research-mode game</a>
+    </div>
+
+    <aside>
+      <p><strong>Getting started:</strong> Select a legally authorized 16,384-byte P1 program image that you already possess. The site does not provide, fetch, or transmit firmware. Then use the three buttons on screen, or the A/B/C and left/down/right keyboard keys.</p>
+      <p><strong>Progress:</strong> CPU, LCD pixels, indicator states, and buzzer frequencies come from TamaLIB. Saves remain local and can be exported. Replaying extended time away may take noticeable processing time, and state restoration still has known limits.</p>
+      <p><strong>Licensing:</strong> Emulator component uses the <a href="https://github.com/jcrona/tamalib" target="_blank" rel="noopener noreferrer">TamaLIB project</a> under the GPLv2-or-later license. <a href="./emu/TAMALIB_LICENSE.txt">View GPL license</a> · <a href="./emu/THIRD_PARTY.txt">Attributions</a>. Original shell artwork, firmware, and manufacturer trademarks are not bundled. Independent project, not endorsed by Bandai.</p>
+    </aside>
+  </main>
+  <script type="module" src="./emu/hardware-ui.js"></script>
+</body>
+</html>
