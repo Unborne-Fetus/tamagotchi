@@ -8,16 +8,16 @@
 - [ ] Collect permission-safe reference photos/audio traces from a physical P1.
 - [ ] Transcribe exact transition criteria and per-character timers with confidence scores.
 
-## Milestone 1 — interaction prototype (in progress)
-- [ ] Static monochrome 32×16 rendering area with independently-drawn provisional character.
-- [ ] A/B/C screen controller with keyboard and touch-compatible buttons.
-- [ ] Setup clock, hatch, 8 indicators, health pages, food and light submenus, left/right game, medicine, discipline, cleaning.
-- [ ] Deterministic time stepping with offline catch-up and save/load.
-- [ ] Automated tests for controls, hatch, food, heart caps, discipline, minigame and evolution.
-- [ ] UI accessibility labels and reduced-motion options.
+## Milestone 1 — interaction prototype (functional research build, fidelity incomplete)
+- [x] Static monochrome 32×16 rendering area with independently-drawn provisional character.
+- [x] A/B/C screen controller with keyboard and touch-compatible buttons.
+- [x] Setup clock, hatch, 8 indicators, health pages, food and light submenus, left/right game, medicine, discipline, cleaning (provisional screens and event timing).
+- [x] Deterministic minute stepping with offline catch-up, version 2 localStorage and JSON backup/import.
+- [x] 16 automated tests for controls, hatch, baby events, food, heart caps, discipline, minigame, clock-edit pause, growth and UI startup; all passing locally on Node 22.
+- [x] UI accessibility labels and reduced-motion options.
 
-## Milestone 2 — historical P1 correctness
-- [ ] Implement exact original P1 data tables: all characters, evolution tree, sleep and heart loss rates, optimal/poor care outcomes.
+## Milestone 2 — historical P1 correctness (partially underway)
+- [ ] Verify original P1 data tables: all characters and evolution paths are modeled; sleep schedules implemented; some heart loss rates and outcome rules remain provisional.
 - [ ] Replace provisional lifecycle and care intervals with measured rules.
 - [ ] Recreate all interaction state machine screens and confirmation/cancel behavior.
 - [ ] Verify attention expiry vs false discipline calls; minute-level replay.
@@ -29,7 +29,7 @@
 - [ ] Implement beep envelope/pitch/duration using independently recreated tones.
 - [ ] Side-by-side visual tests and captured audio comparisons.
 
-## Milestone 4 — robust packaging
+## Milestone 4 — robust packaging (not yet implemented)
 - [ ] Browser offline PWA (service worker, versioned assets).
 - [ ] Windows, Linux, Android, iOS packaging (platform-independent simulation core).
 - [ ] Native background notification scheduling subject to OS limitations; the pet always catches up deterministically on resume.
@@ -61,3 +61,7 @@ All domain logic goes through `createGame`, `advanceGame` and `performAction`. U
 - Scope licensed original *style*, not protected brand assets. No copied ROM / firmware / ripped sprite atlas / sound files.
 - Historical documentation includes character names for reference; shipping title/assets should be independently created or licensed.
 - No ads inside Classic P1; disruptive timed elements would destroy authentic real-time behavior.
+
+## Actual firmware-level 1:1 path
+
+See [EMULATION_PATH.md](EMULATION_PATH.md). A GPL-compliant TamaLIB WASM adapter with an explicitly user-provided, authorized original firmware image is a possible way to replicate device behavior more exactly. This is a proposal, not an existing app feature. Original protected firmware/art assets are not redistributed.
