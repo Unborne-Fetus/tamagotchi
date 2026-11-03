@@ -12,7 +12,7 @@ git -C vendor/tamalib fetch --quiet origin "$TAMALIB_COMMIT"
 git -C vendor/tamalib checkout --quiet --detach "$TAMALIB_COMMIT"
 
 # TamaLIB HAL includes ../hal_types.h from vendor/tamalib.
-cp vendor/tamalib/hal_types.h.template hal_types.h
+cp vendor/tamalib/hal_types.h.template vendor/hal_types.h
 command -v emcc >/dev/null || { echo "Install emsdk before building the emulator"; exit 1; }
 
 emcc -std=c11 -O2 \
