@@ -21,6 +21,7 @@ emcc -std=c11 -O2 \
   -sWASM=1 -sMODULARIZE=1 -sEXPORT_ES6=1 \
   -sEXPORT_NAME=createP1Module -sENVIRONMENT=worker \
   -sALLOW_MEMORY_GROWTH=1 -sFILESYSTEM=0 \
+  -sEXPORTED_RUNTIME_METHODS=HEAPU8 \
   -sEXPORTED_FUNCTIONS="['_malloc','_free','_p1_init','_p1_button','_p1_ticks','_p1_run','_p1_lcd_ptr','_p1_icons','_p1_sound_deci_hz','_p1_rom_hash','_p1_is_ready','_p1_snapshot_bytes','_p1_save','_p1_load']" \
   -o dist/emu/p1_wasm.mjs
 
