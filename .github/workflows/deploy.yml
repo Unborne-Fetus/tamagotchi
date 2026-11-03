@@ -1,12 +1,10 @@
-name: Deploy Tamagotchi to GitHub Pages
+name: Verify and deploy Pocket P1
 
 on:
   push:
     branches: [main]
   workflow_dispatch:
 
-# GitHub Pages publishes from the "github-pages" deployment environment.
-# Enable Settings > Pages > Build and deployment > Source: GitHub Actions.
 permissions:
   contents: read
   pages: write
@@ -18,7 +16,7 @@ concurrency:
 
 jobs:
   build:
-    name: Verify and package browser app
+    name: Verify browser and build original-CPU WASM
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
@@ -29,33 +27,50 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Validate source syntax
+      - name: Check JavaScript syntax
         run: |
           node --check src/engine.js
           node --check src/main.js
+          node --check emu/worker.js
+          node --check emu/hardware-ui.js
 
-      - name: Run simulation tests
+      - name: Run simulation and interface tests
         run: npm test
 
-      - name: Assemble clean static site
+      - name: Configure Emscripten
+        uses: emscripten-core/setup-emsdk@v16
+        with:
+          version: '4.0.15'
+
+      - name: Build ROM-free E0C6S46 emulator
+        run: bash scripts/build-wasm.sh
+
+      - name: Assemble static site
         run: |
           set -euo pipefail
-          mkdir -p dist/src dist/docs
-          cp index.html dist/index.html
+          mkdir -p dist/src dist/docs dist/emu
+          cp index.html hardware.html dist/
           cp src/engine.js src/main.js dist/src/
+          cp emu/worker.js emu/hardware-ui.js dist/emu/
           cp docs/P1_REFERENCE.md docs/IMPLEMENTATION_PLAN.md docs/ACCURACY.md docs/EMULATION_PATH.md dist/docs/
           touch dist/.nojekyll
           test -s dist/index.html
-          test -s dist/src/main.js
-          test -s dist/src/engine.js
+          test -s dist/hardware.html
+          test -s dist/emu/p1_wasm.mjs
+          test -s dist/emu/p1_wasm.wasm
+          test -s dist/emu/TAMALIB_LICENSE.txt
+          if find dist -type f \( -name '*.bin' -o -name '*.rom' -o -name '*.b' \) | grep -q .; then
+            echo 'Firmware found in public artifact: refusing deploy' >&2
+            exit 1
+          fi
 
-      - name: Upload site artifact
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4
         with:
           path: ./dist
 
   deploy:
-    name: Publish GitHub Pages
+    name: Publish Pages
     needs: build
     runs-on: ubuntu-latest
     environment:
@@ -65,6 +80,6 @@ jobs:
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
-      - name: Publish site
+      - name: Deploy static site
         id: deployment
         uses: actions/deploy-pages@v4
