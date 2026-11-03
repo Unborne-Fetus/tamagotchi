@@ -14,16 +14,11 @@ local_static = "static u8_t previous_cycles = 0;"
 if code.count(anchor) != 1 or code.count(local_static) != 1:
     raise SystemExit("Pinned TamaLIB source changed: refusing unsafe patch")
 
-code = code.replace(
-    anchor,
-    "static u8_t p1_previous_cycles = 0;\n"
-    "#define previous_cycles p1_previous_cycles\n"
-    + anchor,
-    1,
-)
-code = code.replace(
-    local_static, "/* previous_cycles is file-static for exact save restoration */", 1
-)
+# Move the original local static into file scope for snapshot access.
+# Avoid macros; they would also expand the name of structure members.
+code = code.replace(local_static, "/* moved to file scope */", 1)
+code = code.replace("previous_cycles", "p1_previous_cycles")
+code = code.replace(anchor, "static u8_t p1_previous_cycles = 0;\\n" + anchor, 1)
 
 extension = r"""
 /* Pocket P1 compatibility extension, GPL-2.0-or-later.
