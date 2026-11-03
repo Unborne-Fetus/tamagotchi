@@ -13,12 +13,13 @@ git -C vendor/tamalib checkout --quiet --detach "$TAMALIB_COMMIT"
 
 # TamaLIB HAL includes ../hal_types.h from vendor/tamalib.
 cp vendor/tamalib/hal_types.h.template vendor/hal_types.h
+python3 scripts/patch-tamalib.py
 command -v emcc >/dev/null || { echo "Install emsdk before building the emulator"; exit 1; }
 
 emcc -std=c11 -O2 \
   native/p1_bridge.c \
   vendor/tamalib/cpu.c vendor/tamalib/hw.c vendor/tamalib/tamalib.c \
-  -sWASM=1 -sMODULARIZE=1 -sEXPORT_ES6=1 \
+  -sWASM=1 -sNO_ENTRY=1 -sMODULARIZE=1 -sEXPORT_ES6=1 \
   -sEXPORT_NAME=createP1Module -sENVIRONMENT=worker \
   -sALLOW_MEMORY_GROWTH=1 -sFILESYSTEM=0 \
   -sEXPORTED_RUNTIME_METHODS=HEAPU8 \
