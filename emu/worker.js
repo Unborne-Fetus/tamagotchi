@@ -30,14 +30,14 @@ function snapshot() {
     const bytes = Uint8Array.from(memView(ptr, n));
     // Subtract unprocessed wall time: on restart the saved game must still catch up.
     const savedAt = Date.now() - Math.floor(pendingTicks / TICKS_PER_MS);
-    return { kind: 'p1-tamalib-state-v1', romHash: core._p1_rom_hash() >>> 0,
+    return { kind: 'p1-tamalib-state-v2', romHash: core._p1_rom_hash() >>> 0,
       savedAt, data: bytes.buffer };
   } finally {
     core._free(ptr);
   }
 }
 function restore(raw) {
-  if (!raw || raw.kind !== 'p1-tamalib-state-v1') return false;
+  if (!raw || raw.kind !== 'p1-tamalib-state-v2') return false;
   if ((raw.romHash >>> 0) !== (core._p1_rom_hash() >>> 0)) return false;
   if (!Number.isFinite(raw.savedAt) || raw.savedAt > Date.now() + 60_000) return false;
   const bytes = new Uint8Array(raw.data);
