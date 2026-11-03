@@ -42,7 +42,7 @@ Implemented: `native/p1_bridge.c` (C hardware HAL), `emu/worker.js` (time progre
 - Program names, real-world screen dimensions and observed mechanical rules can be documented for interoperability; do not copy protected graphics.
 - *One-to-one behavioral reproduction* and *one-to-one physical/art appearance* are separate milestones. A precise CPU emulator may still need permission-safe artwork, shell texture, audio and device-clock verification.
 
-**Current status:** adapter and CI compilation workflow committed, but compilation on GitHub Actions and full browser play with compatible real firmware have NOT been confirmed in this chat. The compiled WASM output is generated only during GitHub Actions. The main research build remains independently playable.
+**Current status (2026-11-02):** The ROM-free TamaLIB WebAssembly adapter was successfully compiled, tested, and published by [GitHub Actions run #41551965246](https://github.com/Unborne-Fetus/tamagotchi/actions/runs/41551965246). The WebAssembly artifact is created during Actions and published to GitHub Pages. Running the original Japanese firmware in a browser and comparing against a physical 1996 unit have **not** been verified. The research-mode game remains playable without firmware.
 
 ## Emulator v0.3 verification backlog
 
