@@ -13,7 +13,12 @@
 #define P1_PROGRAM_WORDS 8192u
 #define P1_LCD_BYTES 512u
 #define P1_SNAPSHOT_MAGIC 0x50315356u  /* P1SV */
-#define P1_SNAPSHOT_VERSION 1u
+#define P1_SNAPSHOT_VERSION 2u
+
+/* Private CPU snapshot accessors are compiled from scripts/patch-tamalib.py. */
+extern uint32_t p1_cpu_private_size(void);
+extern void p1_cpu_private_save(uint8_t *dest);
+extern void p1_cpu_private_load(const uint8_t *src);
 
 static u12_t program[P1_PROGRAM_WORDS];
 static uint8_t matrix[P1_LCD_BYTES];
@@ -124,6 +129,8 @@ int p1_is_ready(void) { return ready && !halted; }
  */
 typedef struct {
     uint32_t magic, version, rom_hash, bytes;
+    uint32_t hal_timestamp;
+    uint8_t private_cpu[32];
     uint16_t pc, x, y;
     uint8_t a, b, np, sp, flags;
     uint32_t tick_counter;
@@ -139,13 +146,16 @@ uint32_t p1_snapshot_bytes(void) { return (uint32_t)sizeof(p1_snapshot_t); }
 int p1_save(uint8_t *out, uint32_t size) {
     p1_snapshot_t v;
     state_t *s;
-    if (!ready || !out || size != sizeof(v)) return 0;
+    if (!ready || !out || size != sizeof(v) ||
+        p1_cpu_private_size() > sizeof(v.private_cpu)) return 0;
     s = tamalib_get_state();
     memset(&v, 0, sizeof(v));
     v.magic = P1_SNAPSHOT_MAGIC;
     v.version = P1_SNAPSHOT_VERSION;
     v.rom_hash = loaded_rom_hash;
     v.bytes = sizeof(v);
+    v.hal_timestamp = virtual_timestamp;
+    p1_cpu_private_save(v.private_cpu);
     v.pc = *s->pc; v.x = *s->x; v.y = *s->y;
     v.a = *s->a; v.b = *s->b; v.np = *s->np;
     v.sp = *s->sp; v.flags = *s->flags;
@@ -175,7 +185,8 @@ int p1_load(const uint8_t *data, uint32_t size) {
     if (!ready || !data || size != sizeof(v)) return 0;
     memcpy(&v, data, sizeof(v));
     if (v.magic != P1_SNAPSHOT_MAGIC || v.version != P1_SNAPSHOT_VERSION ||
-        v.rom_hash != loaded_rom_hash || v.bytes != sizeof(v)) return 0;
+        v.rom_hash != loaded_rom_hash || v.bytes != sizeof(v) ||
+        p1_cpu_private_size() > sizeof(v.private_cpu)) return 0;
     s = tamalib_get_state();
     *s->pc = v.pc; *s->x = v.x; *s->y = v.y;
     *s->a = v.a; *s->b = v.b; *s->np = v.np;
@@ -197,9 +208,9 @@ int p1_load(const uint8_t *data, uint32_t size) {
     *s->cpu_halted = v.cpu_halted;
     memcpy(s->interrupts, v.interrupts, sizeof(v.interrupts));
     memcpy(s->memory, v.memory, sizeof(v.memory));
-    virtual_timestamp = v.tick_counter;
+    p1_cpu_private_load(v.private_cpu);
+    virtual_timestamp = v.hal_timestamp;
     halted = v.cpu_halted;
-    cpu_sync_ref_timestamp();
     tamalib_refresh_hw();
     return 1;
 }
