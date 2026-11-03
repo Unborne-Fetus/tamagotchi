@@ -16,7 +16,7 @@ Reconstruct the experience of the first-generation three-button, monochrome, rea
 - `docs/EMULATION_PATH.md` — optional GPL-compliant emulator/WASM path to firmware fidelity.
 - `src/engine.js` — dependency-free Japanese 1996 P1 research engine with versioned state, stage-specific life cycle, time and needs.
 - `src/main.js` and `index.html` — browser prototype with A/B/C controls and monochrome display.
-- `tests/engine.test.mjs` — 15 deterministic Node tests (all passed locally on Node 22).
+- `tests/engine.test.mjs` — 16 deterministic Node tests, including a UI clock-control smoke test (all passed locally on Node 22).
 
 ## Scope
 
