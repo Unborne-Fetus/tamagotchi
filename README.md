@@ -24,6 +24,14 @@ Reconstruct the experience of the first-generation three-button, monochrome, rea
 
 Explicitly out of scope for P1: connections, breeding, modern shops/currency, touchscreen controls, online play, P2 number game, modern characters, and forced ad interruptions.
 
+## Original-CPU mode (requires your own authorized firmware)
+
+Open **[Hardware P1 mode](https://unborne-fetus.github.io/tamagotchi/hardware.html)** after the [GitHub Pages workflow](https://github.com/Unborne-Fetus/tamagotchi/actions/workflows/deploy.yml) succeeds. The page does not fetch, bundle or upload proprietary firmware. Select a locally held, authorized **16,384-byte big-endian 12-bit P1 program image** using its file picker; the compiled open-source TamaLIB E0C6S46 emulator then drives the LCD, eight indicators, and buzzer. Press the three on-screen buttons or use A/B/C and arrow keys. The WebAssembly version is built automatically from [pinned TamaLIB source](https://github.com/jcrona/tamalib/commit/ce304d55f9a73c60232ce3f552e7983db3fa399c).
+
+The new mode keeps snapshots in the browser and offers save import/export. Firmware is **never** stored or uploaded by the site; select it again on each new session. Long offline gaps are replayed with a work budget, not silently skipped. **Important:** exact boot, visual timing, audio timing, and snapshot restores have not yet been validated against a 1996 physical P1. Do not describe this as a certified 1:1 clone. It is an original-CPU implementation with known limitations. Without firmware, the separate JavaScript research-mode game is immediately playable.
+
+The compiled hardware component and its wrapper are GPL-2.0-or-later; original TamaLIB copyright belongs to Jean-Christophe Rona. See [hardware architecture](docs/EMULATION_PATH.md) and the source in `native/`, `emu/`, `scripts/`. The combined program must be distributed in compliance with TamaLIB's GPL terms. No proprietary original sprite atlas or firmware is redistributed.
+
 ## Play online (GitHub Pages)
 
 **Expected website address (once Pages is enabled and the deployment succeeds):**
