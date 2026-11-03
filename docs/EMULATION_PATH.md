@@ -1,6 +1,6 @@
 # Path to actual 1:1 authenticity: optional hardware emulation
 
-The current repository implements *independent behavioral reconstruction*. An identical original game requires matching **CPU, program ROM, display controller, button logic and clock/audio behavior**, not just a similar skin.
+The repository implements both *independent behavioral reconstruction* and a ROM-free E0C6S46 TamaLIB WebAssembly bridge. An identical original game requires matching **CPU, program ROM, display controller, button logic and clock/audio behavior**, not just a similar skin.
 
 ## Candidate technology
 
@@ -19,7 +19,7 @@ The current repository implements *independent behavioral reconstruction*. An id
 6. Implement save state with a versioned browser storage format; use import/export to back up data.
 7. Compare identical test traces between the new emulator and independently reconstructed engine; do not claim exactness without verification.
 
-## Implementation interfaces (not built yet)
+## Implemented interfaces and remaining gaps
 
 ```ts
 interface PocketPetRuntime {
@@ -34,7 +34,7 @@ interface PocketPetRuntime {
 }
 ```
 
-Implementation can live in `src/emulator/` with independent test fixtures. Do not put a non-functional firmware upload button in the public UI before it is ready.
+Implemented: `native/p1_bridge.c` (C hardware HAL), `emu/worker.js` (time progression and snapshots), `emu/hardware-ui.js` (LCD/sound/input), `hardware.html` (browser interface), and `scripts/build-wasm.sh` (pinned upstream TamaLIB build). The hardware view is behind a local firmware file selector and no firmware is bundled.
 
 ## Boundaries
 
@@ -42,4 +42,13 @@ Implementation can live in `src/emulator/` with independent test fixtures. Do no
 - Program names, real-world screen dimensions and observed mechanical rules can be documented for interoperability; do not copy protected graphics.
 - *One-to-one behavioral reproduction* and *one-to-one physical/art appearance* are separate milestones. A precise CPU emulator may still need permission-safe artwork, shell texture, audio and device-clock verification.
 
-**Current status:** architecture identified; WASM adapter is NOT installed, compiled, functional, or deployed. The GitHub Pages site currently runs the independent research build.
+**Current status:** adapter and CI compilation workflow committed, but compilation on GitHub Actions and full browser play with compatible real firmware have NOT been confirmed in this chat. The compiled WASM output is generated only during GitHub Actions. The main research build remains independently playable.
+
+## Emulator v0.3 verification backlog
+
+- CI must successfully clone pinned TamaLIB revision and compile Emscripten 4.0.15. Confirm run output rather than infer success from a Git commit.
+- Use a legally authorized compatible original firmware image locally, verify boot/clock setting, A/B/C down/up, LCD pixels/icons, pitch/gates, and lifecycle over days.
+- Capture and compare actual hardware frames/timestamps for the original 1996 Japanese P1; no shipped artwork has been copied.
+- Test save/load at instruction boundaries and during active sound. TamaLIB does not export every internal CPU static, so the current snapshot format is not proof of cycle-perfect restoration.
+- Run a 24-hour and 7-day catch-up benchmark; the emulator replays real CPU work and can take substantial time if offline for days.
+- Verify P1 firmware hash/variant identification. Rejected invalid/non-P1 firmware must not alter saved states.
