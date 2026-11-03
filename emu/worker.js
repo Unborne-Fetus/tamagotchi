@@ -110,12 +110,12 @@ async function boot(data) {
   try {
     const bytes = new Uint8Array(data.rom);
     if (bytes.byteLength !== 16384) throw Error('P1 firmware must be exactly 16,384 bytes');
-    if (!core) {
-      const imported = await import('./p1_wasm.mjs');
-      core = await imported.default({
-        locateFile: (file) => new URL(file, import.meta.url).href
-      });
-    }
+    // A new firmware boot must get fresh CPU statics, interrupts and clock.
+    // TamaLIB's public cpu_reset() does not zero all of its internal globals.
+    const imported = await import('./p1_wasm.mjs');
+    core = await imported.default({
+      locateFile: (file) => new URL(file, import.meta.url).href
+    });
     const ptr = core._malloc(bytes.byteLength);
     if (!ptr) throw Error('Unable to allocate firmware memory');
     let ok;
